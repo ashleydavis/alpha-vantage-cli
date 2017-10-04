@@ -1,6 +1,6 @@
 {
   "name": "alpha-vantage-cli",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "A command line app and Node.js api for retreiving data from Alpha Vantage.",
   "main": "build/index.js",
   "types": "build/index.d.ts",
@@ -14,7 +14,7 @@
     "test:intraday": "ts-node cli.ts --type=intraday --symbol=MSFT --api-key=your-api-key --interval=15min --out=./test/MSFT-intraday.csv --verbose"
   },
   "bin": {
-    "alpha-vantage-cli": "./bin/cli"
+    "alpha-vantage-cli": "./build/cli.js"
   },
   "repository": {
     "type": "git",
