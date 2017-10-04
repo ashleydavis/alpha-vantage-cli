@@ -49,10 +49,10 @@ export class AlphaVantageAPI {
 
     private baseUrl = "https://www.alphavantage.co";
 
-    constructor(apiKey: string, outputDataSize: string, verbose: boolean) {
+    constructor(apiKey: string, outputDataSize: string, verbose: boolean | undefined) {
         this.apiKey = apiKey;
         this.outputDataSize = outputDataSize;
-        this.verbose = verbose;
+        this.verbose = verbose !== undefined ? verbose : false;
     }
 
     //
