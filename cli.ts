@@ -1,3 +1,4 @@
+#!/usr/bin/env node
 
 //
 // Command line app for downloading data from Alpha Vantage.

@@ -62,14 +62,14 @@ var AlphaVantageAPI = /** @class */ (function () {
     //
     // Retreive stock data from Alpha Vantage.
     //
-    AlphaVantageAPI.prototype.getDailyData = function (symbol) {
+    AlphaVantageAPI.prototype.getDailyDataFrame = function (symbol) {
         return __awaiter(this, void 0, void 0, function () {
             var url, response;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
                         url = this.baseUrl + "/query" +
-                            "?function=TIME_SERIES_DAILY " +
+                            "?function=TIME_SERIES_DAILY_ADJUSTED" +
                             "&symbol=" + symbol +
                             "&apikey=" + this.apiKey +
                             "&datatype=csv" +
@@ -83,8 +83,22 @@ var AlphaVantageAPI = /** @class */ (function () {
                         if (response.indexOf("Error Message") >= 0) {
                             throw new Error(JSON.parse(response)["Error Message"]);
                         }
-                        console.log(response);
-                        return [2 /*return*/, []];
+                        return [2 /*return*/, dataForge
+                                .fromCSV(response, { skipEmptyLines: true })
+                                .parseDates("timestamp", "YYYY-MM-DD")
+                                .parseFloats(["open", "high", "low", "close", "adjusted_close", "volume", "dividend_amount", "split_coefficient"])
+                                .renameSeries({
+                                timestamp: "Timestamp",
+                                open: "Open",
+                                high: "High",
+                                low: "Low",
+                                close: "Close",
+                                adjusted_close: "AdjClose",
+                                volume: "Volume",
+                                dividend_amount: "DividendAmount",
+                                split_coefficient: "SplitCoefficient",
+                            })
+                                .bake()];
                 }
             });
         });
@@ -92,7 +106,23 @@ var AlphaVantageAPI = /** @class */ (function () {
     //
     // Retreive stock data from Alpha Vantage.
     //
-    AlphaVantageAPI.prototype.getIntradayData = function (symbol, interval) {
+    AlphaVantageAPI.prototype.getDailyData = function (symbol) {
+        return __awaiter(this, void 0, void 0, function () {
+            var bars;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0: return [4 /*yield*/, this.getDailyDataFrame(symbol)];
+                    case 1:
+                        bars = (_a.sent()).toArray();
+                        return [2 /*return*/, bars];
+                }
+            });
+        });
+    };
+    //
+    // Retreive stock data from Alpha Vantage.
+    //
+    AlphaVantageAPI.prototype.getIntradayDataFrame = function (symbol, interval) {
         return __awaiter(this, void 0, void 0, function () {
             var url, response;
             return __generator(this, function (_a) {
@@ -114,8 +144,35 @@ var AlphaVantageAPI = /** @class */ (function () {
                         if (response.indexOf("Error Message") >= 0) {
                             throw new Error(JSON.parse(response)["Error Message"]);
                         }
-                        console.log(response);
-                        return [2 /*return*/, []];
+                        return [2 /*return*/, dataForge
+                                .fromCSV(response, { skipEmptyLines: true })
+                                .parseDates("timestamp", "YYYY-MM-DD HH:mm:ss")
+                                .parseFloats(["open", "high", "low", "close", "volume"])
+                                .renameSeries({
+                                timestamp: "Timestamp",
+                                open: "Open",
+                                high: "High",
+                                low: "Low",
+                                close: "Close",
+                                volume: "Volume",
+                            })
+                                .bake()];
+                }
+            });
+        });
+    };
+    //
+    // Retreive stock data from Alpha Vantage.
+    //
+    AlphaVantageAPI.prototype.getIntradayData = function (symbol, interval) {
+        return __awaiter(this, void 0, void 0, function () {
+            var bars;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0: return [4 /*yield*/, this.getIntradayDataFrame(symbol, interval)];
+                    case 1:
+                        bars = (_a.sent()).toArray();
+                        return [2 /*return*/, bars];
                 }
             });
         });

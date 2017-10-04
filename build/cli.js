@@ -1,7 +1,5 @@
+#!/usr/bin/env node
 "use strict";
-//
-// Command line app for downloading data from Alpha Vantage.
-//
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
     return new (P || (P = Promise))(function (resolve, reject) {
         function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
@@ -40,12 +38,13 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
 Object.defineProperty(exports, "__esModule", { value: true });
 var index_1 = require("./index");
 var yargs_1 = require("yargs");
+var moment = require("moment");
 //
 // Entry point.
 //
 function main() {
     return __awaiter(this, void 0, void 0, function () {
-        var outputDataSize, interval, api, bars, bars;
+        var outputDataSize, interval, dataFrame, dateFormat, api;
         return __generator(this, function (_a) {
             switch (_a.label) {
                 case 0:
@@ -59,10 +58,6 @@ function main() {
                     }
                     if (!yargs_1.argv.apiKey) {
                         console.error("Missing --api-key=<alpha-vantage-api-key> on the command line.");
-                        process.exit(1);
-                    }
-                    if (!yargs_1.argv.function) {
-                        console.error("Missing --function=<alpha-vantage-function> on the command line.");
                         process.exit(1);
                     }
                     if (!yargs_1.argv.out) {
@@ -79,20 +74,30 @@ function main() {
                     }
                     api = new index_1.AlphaVantageAPI(yargs_1.argv.apiKey, outputDataSize, yargs_1.argv.verbose);
                     if (!(yargs_1.argv.type === 'daily')) return [3 /*break*/, 2];
-                    return [4 /*yield*/, api.getDailyData(yargs_1.argv.symbol)];
+                    return [4 /*yield*/, api.getDailyDataFrame(yargs_1.argv.symbol)];
                 case 1:
-                    bars = _a.sent();
-                    console.log(bars);
+                    dataFrame = _a.sent();
+                    dateFormat = 'YYYY-MM-DD';
                     return [3 /*break*/, 5];
                 case 2:
                     if (!(yargs_1.argv.type === 'intraday')) return [3 /*break*/, 4];
-                    return [4 /*yield*/, api.getIntradayData(yargs_1.argv.symbol, interval)];
+                    return [4 /*yield*/, api.getIntradayDataFrame(yargs_1.argv.symbol, interval)];
                 case 3:
-                    bars = _a.sent();
-                    console.log(bars);
+                    dataFrame = _a.sent();
+                    dateFormat = "YYYY-MM-DD HH:mm:ss";
                     return [3 /*break*/, 5];
                 case 4: throw new Error("Unexpected data type: " + yargs_1.argv.type + ", expected it to be either 'daily' or 'intrday'");
-                case 5: return [2 /*return*/];
+                case 5:
+                    if (!yargs_1.argv.verbose) {
+                        console.log('>> ' + yargs_1.argv.out);
+                    }
+                    dataFrame
+                        .transformSeries({
+                        Timestamp: function (t) { return moment(t).format(dateFormat); },
+                    })
+                        .asCSV()
+                        .writeFileSync(yargs_1.argv.out);
+                    return [2 /*return*/];
             }
         });
     });
