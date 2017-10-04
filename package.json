@@ -9,7 +9,9 @@
     "build": "tsc",
     "clean-build": "rm -rf build/* && tsc",
     "build:watch": "tsc --watch",
-    "clean-build:watch": "rm -rf build/* && tsc --watch"
+    "clean-build:watch": "rm -rf build/* && tsc --watch",
+    "test:daily": "ts-node cli.ts --type=daily --symbol=MSFT --api-key=your-api-key --out=./test/MSFT-daily.csv --verbose",
+    "test:intraday": "ts-node cli.ts --type=intraday --symbol=MSFT --api-key=your-api-key --interval=15min --out=./test/MSFT-intraday.csv --verbose"
   },
   "bin": {
     "alpha-vantage-cli": "./bin/cli"
