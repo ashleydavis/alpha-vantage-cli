@@ -57,7 +57,7 @@ var AlphaVantageAPI = /** @class */ (function () {
         this.baseUrl = "https://www.alphavantage.co";
         this.apiKey = apiKey;
         this.outputDataSize = outputDataSize;
-        this.verbose = verbose;
+        this.verbose = verbose !== undefined ? verbose : false;
     }
     //
     // Retreive stock data from Alpha Vantage.

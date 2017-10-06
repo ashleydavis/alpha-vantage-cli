@@ -37,8 +37,135 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 var index_1 = require("./index");
-var yargs_1 = require("yargs");
+var yargs = require("yargs");
 var moment = require("moment");
+var argv = yargs
+    .usage("alpha-vantage-cli --type=<data-type> --symbol=<instrument-symbol> --api-key=<your-api-key> --out=<output-file>")
+    .example("alpha-vantage-cli --type=intraday --symbol=MSFT --api-key=demo --interval=15min --out=./test/MSFT-intraday.csv")
+    .help('h')
+    .alias('h', 'help')
+    .option('type', {
+    alias: 't',
+    describe: 'The type of data to retreive (daily or intraday).',
+    choices: ['daily', 'intraday'],
+    default: 'daily',
+    type: 'string',
+})
+    .option('symbol', {
+    alias: 's',
+    describe: 'The company/instrument to retreive data for (eg MSFT).',
+    choices: ['daily', 'intraday'],
+    default: 'daily',
+    demandOption: true,
+    type: 'string',
+})
+    .option('apiKey', {
+    alias: 'k',
+    describe: 'Your Alpha Vantage API key. See --help for details.',
+    demandOption: true,
+    type: 'string',
+})
+    .option('out', {
+    alias: 'o',
+    describe: 'Specifies the name of the output file. Data is written to this file in CSV format.',
+    demandOption: true,
+    type: 'string',
+})
+    .option('outputDataSize', {
+    describe: 'Specifies the output data size.',
+    choices: ["full", "compact"],
+    default: "compact",
+    type: 'string',
+})
+    .option('interval', {
+    describe: 'Specifies the interval for intraday data.',
+    choices: ["1min", "5min", "15min", "30min", "60min"],
+    default: "60min",
+    type: 'string',
+})
+    .option('verbose', {
+    alias: 'v',
+    default: false,
+})
+    .demandOption(['symbol', 'apiKey'], 'At a minimum you must provide both symbol and api-key options on the command line.')
+    .help()
+    .epliogue("Getting your API key:\r\n" +
+    "\tPlease follow this link and get your own API key from Alpha Vantage:\r\n" +
+    "\thttps://www.alphavantage.co/support/#api-key")
+    .argv;
+/*fio:
+//
+// Display usage documentation for the cli tool.
+//
+function displayUsage(): void {
+    console.log(
+        "Usage:\r\n" +
+        "\talpha-vantage-cli --type=<data-type> --symbol=<instrument-symbol> --api-key=<your-api-key> --out=<output-file>\r\n" +
+        "\r\n" +
+        "Options:\r\n" +
+        "\t--type\tThe type of data to retreive (daily or intraday).\r\n" +
+        "\t--symbol\tThe company/instrument to retreive data for (eg MSFT).\r\n" +
+        "\t--api-key\tYour Alpha Vantage API key. See below for instructions.\r\n" +
+        "\t--out\t\r\n" +
+        "\r\n" +
+        "Example usage:\r\n" +
+        "\talpha-vantage-cli --type=intraday --symbol=MSFT --api-key=demo --interval=15min --out=./test/MSFT-intraday.csv\r\n" +
+        "\r\n" +
+        "Optional options:\r\n" +
+        "\t--verbose\tPrint information about what the tool is doing.\r\n" +
+        "\t--version\tDisplay the version number of the tool.\r\n" +
+        "\t--help\tDisplay this help.\r\n" +
+        "\r\n" +
+        "Getting your API key:\r\n" +
+        "\tPlease follow this link and get your own API key from Alpha Vantage:\r\n" +
+        "\thttps://www.alphavantage.co/support/#api-key"
+    );
+}
+
+//
+// Check arguments to make sure they are correct.
+//
+function checkArgs(): void {
+
+    if (argv.help) {
+        displayUsage();
+        process.exit(0);
+    }
+
+    var argumentError = false;
+
+    if (!argv.type) {
+        console.error("Missing --type=<data-type> on the command line.");
+        argumentError = true;
+    }
+    else {
+        if (argv.type !== 'daily' && argv.type !== 'intrday') {
+            console.error("Argument --type should specify either 'daily' or 'intraday'.");
+            argumentError = true;
+        }
+    }
+
+    if (!argv.symbol) {
+        console.error("Missing --symbol=<your-symbol> on the command line.");
+        argumentError = true;
+    }
+
+    if (!argv.apiKey) {
+        console.error("Missing --api-key=<alpha-vantage-api-key> on the command line.");
+        argumentError = true;
+    }
+
+    if (!argv.out) {
+        console.error("Missing --out=<output-csv-file> on the command line.");
+        argumentError = true;
+    }
+
+    if (argumentError) {
+        displayUsage();
+        process.exit(1);
+    }
+}
+*/
 //
 // Entry point.
 //
@@ -48,55 +175,40 @@ function main() {
         return __generator(this, function (_a) {
             switch (_a.label) {
                 case 0:
-                    if (!yargs_1.argv.type) {
-                        console.error("Missing --type=<data-type> on the command line.");
-                        process.exit(1);
-                    }
-                    if (!yargs_1.argv.symbol) {
-                        console.error("Missing --symbol=<your-symbol> on the command line.");
-                        process.exit(1);
-                    }
-                    if (!yargs_1.argv.apiKey) {
-                        console.error("Missing --api-key=<alpha-vantage-api-key> on the command line.");
-                        process.exit(1);
-                    }
-                    if (!yargs_1.argv.out) {
-                        console.error("Missing --out=<output-csv-file> on the command line.");
-                        process.exit(1);
-                    }
                     outputDataSize = "compact";
-                    if (yargs_1.argv.outputDataSize) {
-                        outputDataSize = yargs_1.argv.outputDataSize;
+                    if (argv.outputDataSize) {
+                        outputDataSize = argv.outputDataSize;
                     }
+                    console.log('Type: ' + argv.type); //fio:
                     interval = '60min';
-                    if (yargs_1.argv.interval) {
-                        interval = yargs_1.argv.interval;
+                    if (argv.interval) {
+                        interval = argv.interval;
                     }
-                    api = new index_1.AlphaVantageAPI(yargs_1.argv.apiKey, outputDataSize, yargs_1.argv.verbose);
-                    if (!(yargs_1.argv.type === 'daily')) return [3 /*break*/, 2];
-                    return [4 /*yield*/, api.getDailyDataFrame(yargs_1.argv.symbol)];
+                    api = new index_1.AlphaVantageAPI(argv.apiKey, outputDataSize, argv.verbose);
+                    if (!(argv.type === 'daily')) return [3 /*break*/, 2];
+                    return [4 /*yield*/, api.getDailyDataFrame(argv.symbol)];
                 case 1:
                     dataFrame = _a.sent();
                     dateFormat = 'YYYY-MM-DD';
                     return [3 /*break*/, 5];
                 case 2:
-                    if (!(yargs_1.argv.type === 'intraday')) return [3 /*break*/, 4];
-                    return [4 /*yield*/, api.getIntradayDataFrame(yargs_1.argv.symbol, interval)];
+                    if (!(argv.type === 'intraday')) return [3 /*break*/, 4];
+                    return [4 /*yield*/, api.getIntradayDataFrame(argv.symbol, interval)];
                 case 3:
                     dataFrame = _a.sent();
                     dateFormat = "YYYY-MM-DD HH:mm:ss";
                     return [3 /*break*/, 5];
-                case 4: throw new Error("Unexpected data type: " + yargs_1.argv.type + ", expected it to be either 'daily' or 'intrday'");
+                case 4: throw new Error("Unexpected data type: " + argv.type + ", expected it to be either 'daily' or 'intrday'");
                 case 5:
-                    if (!yargs_1.argv.verbose) {
-                        console.log('>> ' + yargs_1.argv.out);
+                    if (!argv.verbose) {
+                        console.log('>> ' + argv.out);
                     }
                     dataFrame
                         .transformSeries({
                         Timestamp: function (t) { return moment(t).format(dateFormat); },
                     })
                         .asCSV()
-                        .writeFileSync(yargs_1.argv.out);
+                        .writeFileSync(argv.out);
                     return [2 /*return*/];
             }
         });

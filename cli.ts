@@ -5,39 +5,80 @@
 //
 
 import { DailyBar, IntradayBar, AlphaVantageAPI } from './index';
-import { argv } from 'yargs';
+import * as yargs from 'yargs';
 import * as moment from 'moment';
+import * as path from 'path';
+
+ var argv = yargs
+    .version()
+    .usage("alpha-vantage-cli --type=<data-type> --symbol=<instrument-symbol> --api-key=<your-api-key> --out=<output-file>")
+    .example("daily", "alpha-vantage-cli --type=daily --symbol=MSFT --api-key=demo --out=./test/MSFT-daily.csv")
+    .example("intraday", "alpha-vantage-cli --type=intraday --symbol=MSFT --api-key=demo --interval=15min --out=./test/MSFT-intraday.csv")
+    .wrap(yargs.terminalWidth())
+    .option('type', {
+        alias: 't',
+        describe: 'The type of data to retreive (daily or intraday).',
+        choices: ['daily', 'intraday'],
+        default: 'daily',
+        type: 'string',
+    })
+    .option('symbol', {
+        alias: 's',
+        describe: 'The company/instrument to retreive data for (eg MSFT).',
+        demandOption: true,
+        type: 'string',
+    })
+    .option('api-key', {
+        alias: 'k',
+        describe: 'Your Alpha Vantage API key. See --help for details.',
+        demandOption: true,
+        type: 'string',
+    })
+    .option('out', {
+        alias: 'o',
+        describe: 'Specifies the name of the output file. Data is written to this file in CSV format.',
+        demandOption: true,
+        type: 'string',
+    })
+    .option('output-data-size', {
+        describe: 'Specifies the output data size.',
+        choices: ["full", "compact"],
+        default: "compact",
+        type: 'string',
+    })
+    .option('interval', {
+        describe: 'Specifies the interval for intraday data.',
+        choices: ["1min", "5min", "15min", "30min", "60min"],
+        default: "60min",
+        type: 'string',
+    })
+    .option('verbose', {
+        alias: 'v',
+        describe: "Print information about what the tool is doing.",
+        default: false,
+        type: "boolean",
+    })
+    .help()
+    .epilogue(
+        "Getting your API key:\r\n" +
+        "Please follow this link and get your own API key from Alpha Vantage:\r\n" +
+        "https://www.alphavantage.co/support/#api-key"
+    )
+    .argv
+    ;
 
 //
 // Entry point.
 //
 async function main(): Promise<void> {
 
-    if (!argv.type) {
-        console.error("Missing --type=<data-type> on the command line.");
-        process.exit(1);
-    }
-
-    if (!argv.symbol) {
-        console.error("Missing --symbol=<your-symbol> on the command line.");
-        process.exit(1);
-    }
-
-    if (!argv.apiKey) {
-        console.error("Missing --api-key=<alpha-vantage-api-key> on the command line.");
-        process.exit(1);
-    }
-
-    if (!argv.out) {
-        console.error("Missing --out=<output-csv-file> on the command line.");
-        process.exit(1);
-    }
+    //checkArgs();
 
     var outputDataSize = "compact";
     if (argv.outputDataSize) {
         outputDataSize = argv.outputDataSize;
     }
-    
+
     var interval = '60min';
     if (argv.interval) {
         interval = argv.interval;

@@ -22,7 +22,7 @@ export declare class AlphaVantageAPI {
     outputDataSize: string;
     verbose: boolean;
     private baseUrl;
-    constructor(apiKey: string, outputDataSize: string, verbose: boolean);
+    constructor(apiKey: string, outputDataSize: string, verbose: boolean | undefined);
     getDailyDataFrame(symbol: string): Promise<any>;
     getDailyData(symbol: string): Promise<DailyBar[]>;
     getIntradayDataFrame(symbol: string, interval: string): Promise<any>;

@@ -10,3 +10,6 @@ alphaVantageAPI.getIntradayData('MSFT', '15min')
         console.log("Intraday data:");
         console.log(intradayData);
     });
+    .catch(err => {
+        console.error(err);
+    });
