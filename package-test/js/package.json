@@ -9,6 +9,6 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "alpha-vantage-cli": "1.0.3"
+    "alpha-vantage-cli": "1.0.5"
   }
 }
