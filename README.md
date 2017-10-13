@@ -8,6 +8,8 @@ You can use it from your Node.js app as a reusable code module.
 
 Data is returned *as is* from [Alpha Vantage](https://www.alphavantage.co/) with no modification.
 
+For more information [please see my blog post on the Data Wrangler(http://www.the-data-wrangler.com/acquiring-stock-market-data-from-alpha-vantage/).
+
 ## Getting an Alpha Vantage API key
 
 Alpha Vantage is free, but to use it you must sign up for an API key. Please follow this link to sign up:
@@ -73,20 +75,7 @@ Here are examples of use from a JavaScript code file. Don't forget to replace th
 
 #### Daily data
 
-    var AlphaVantageAPI = require('alpha-vantage-cli').AlphaVantageAPI;
-
-    var yourApiKey = 'demo';
-    var alphaVantageAPI = new AlphaVantageAPI(yourApiKey, 'compact', true);
-
-    alphaVantageAPI.getDailyData('MSFT')
-        .then(dailyData => {
-            console.log("Daily data:");
-            console.log(dailyData);
-        })
-        .catch(err => {
-            console.error(err);
-        });
-
+S
 #### Intraday data
 
     var AlphaVantageAPI = require('alpha-vantage-cli').AlphaVantageAPI;
