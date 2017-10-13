@@ -8,7 +8,7 @@ You can use it from your Node.js app as a reusable code module.
 
 Data is returned *as is* from [Alpha Vantage](https://www.alphavantage.co/) with no modification.
 
-For more information [please see my blog post on the Data Wrangler(http://www.the-data-wrangler.com/acquiring-stock-market-data-from-alpha-vantage/).
+For more information [please see my blog post on the Data Wrangler](http://www.the-data-wrangler.com/acquiring-stock-market-data-from-alpha-vantage/).
 
 ## Getting an Alpha Vantage API key
 
