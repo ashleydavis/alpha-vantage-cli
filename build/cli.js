@@ -40,10 +40,11 @@ var index_1 = require("./index");
 var yargs = require("yargs");
 var moment = require("moment");
 var argv = yargs
+    .version()
     .usage("alpha-vantage-cli --type=<data-type> --symbol=<instrument-symbol> --api-key=<your-api-key> --out=<output-file>")
-    .example("alpha-vantage-cli --type=intraday --symbol=MSFT --api-key=demo --interval=15min --out=./test/MSFT-intraday.csv")
-    .help('h')
-    .alias('h', 'help')
+    .example("daily", "alpha-vantage-cli --type=daily --symbol=MSFT --api-key=demo --out=./test/MSFT-daily.csv")
+    .example("intraday", "alpha-vantage-cli --type=intraday --symbol=MSFT --api-key=demo --interval=15min --out=./test/MSFT-intraday.csv")
+    .wrap(yargs.terminalWidth())
     .option('type', {
     alias: 't',
     describe: 'The type of data to retreive (daily or intraday).',
@@ -54,12 +55,10 @@ var argv = yargs
     .option('symbol', {
     alias: 's',
     describe: 'The company/instrument to retreive data for (eg MSFT).',
-    choices: ['daily', 'intraday'],
-    default: 'daily',
     demandOption: true,
     type: 'string',
 })
-    .option('apiKey', {
+    .option('api-key', {
     alias: 'k',
     describe: 'Your Alpha Vantage API key. See --help for details.',
     demandOption: true,
@@ -71,7 +70,7 @@ var argv = yargs
     demandOption: true,
     type: 'string',
 })
-    .option('outputDataSize', {
+    .option('output-data-size', {
     describe: 'Specifies the output data size.',
     choices: ["full", "compact"],
     default: "compact",
@@ -85,87 +84,15 @@ var argv = yargs
 })
     .option('verbose', {
     alias: 'v',
+    describe: "Print information about what the tool is doing.",
     default: false,
+    type: "boolean",
 })
-    .demandOption(['symbol', 'apiKey'], 'At a minimum you must provide both symbol and api-key options on the command line.')
     .help()
-    .epliogue("Getting your API key:\r\n" +
-    "\tPlease follow this link and get your own API key from Alpha Vantage:\r\n" +
-    "\thttps://www.alphavantage.co/support/#api-key")
+    .epilogue("Getting your API key:\r\n" +
+    "Please follow this link and get your own API key from Alpha Vantage:\r\n" +
+    "https://www.alphavantage.co/support/#api-key")
     .argv;
-/*fio:
-//
-// Display usage documentation for the cli tool.
-//
-function displayUsage(): void {
-    console.log(
-        "Usage:\r\n" +
-        "\talpha-vantage-cli --type=<data-type> --symbol=<instrument-symbol> --api-key=<your-api-key> --out=<output-file>\r\n" +
-        "\r\n" +
-        "Options:\r\n" +
-        "\t--type\tThe type of data to retreive (daily or intraday).\r\n" +
-        "\t--symbol\tThe company/instrument to retreive data for (eg MSFT).\r\n" +
-        "\t--api-key\tYour Alpha Vantage API key. See below for instructions.\r\n" +
-        "\t--out\t\r\n" +
-        "\r\n" +
-        "Example usage:\r\n" +
-        "\talpha-vantage-cli --type=intraday --symbol=MSFT --api-key=demo --interval=15min --out=./test/MSFT-intraday.csv\r\n" +
-        "\r\n" +
-        "Optional options:\r\n" +
-        "\t--verbose\tPrint information about what the tool is doing.\r\n" +
-        "\t--version\tDisplay the version number of the tool.\r\n" +
-        "\t--help\tDisplay this help.\r\n" +
-        "\r\n" +
-        "Getting your API key:\r\n" +
-        "\tPlease follow this link and get your own API key from Alpha Vantage:\r\n" +
-        "\thttps://www.alphavantage.co/support/#api-key"
-    );
-}
-
-//
-// Check arguments to make sure they are correct.
-//
-function checkArgs(): void {
-
-    if (argv.help) {
-        displayUsage();
-        process.exit(0);
-    }
-
-    var argumentError = false;
-
-    if (!argv.type) {
-        console.error("Missing --type=<data-type> on the command line.");
-        argumentError = true;
-    }
-    else {
-        if (argv.type !== 'daily' && argv.type !== 'intrday') {
-            console.error("Argument --type should specify either 'daily' or 'intraday'.");
-            argumentError = true;
-        }
-    }
-
-    if (!argv.symbol) {
-        console.error("Missing --symbol=<your-symbol> on the command line.");
-        argumentError = true;
-    }
-
-    if (!argv.apiKey) {
-        console.error("Missing --api-key=<alpha-vantage-api-key> on the command line.");
-        argumentError = true;
-    }
-
-    if (!argv.out) {
-        console.error("Missing --out=<output-csv-file> on the command line.");
-        argumentError = true;
-    }
-
-    if (argumentError) {
-        displayUsage();
-        process.exit(1);
-    }
-}
-*/
 //
 // Entry point.
 //
@@ -179,7 +106,6 @@ function main() {
                     if (argv.outputDataSize) {
                         outputDataSize = argv.outputDataSize;
                     }
-                    console.log('Type: ' + argv.type); //fio:
                     interval = '60min';
                     if (argv.interval) {
                         interval = argv.interval;

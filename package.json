@@ -1,6 +1,6 @@
 {
   "name": "alpha-vantage-cli",
-  "version": "1.0.7",
+  "version": "1.0.8",
   "description": "A command line app and Node.js api for retreiving data from Alpha Vantage.",
   "main": "build/index.js",
   "types": "build/index.d.ts",
