@@ -16,7 +16,7 @@ Alpha Vantage is free, but to use it you must sign up for an API key. Please fol
 
 [https://www.alphavantage.co/support/#api-key](https://www.alphavantage.co/support/#api-key)
 
-For general guidance on working with financial market data, please refer to this [inance API guide](https://medium.com/@patrick.collins_58673/stock-api-landscape-5c6e054ee631)
+For general guidance on working with financial market data, please refer to this [finance API guide](https://medium.com/@patrick.collins_58673/stock-api-landscape-5c6e054ee631)
 
 The examples that follow use the 'demo' API key, please be aware that this has very limited usage.
 
