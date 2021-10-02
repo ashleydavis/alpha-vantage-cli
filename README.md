@@ -10,6 +10,8 @@ Data is returned *as is* from [Alpha Vantage](https://www.alphavantage.co/) with
 
 For more information [please see my blog post on the Data Wrangler](http://www.the-data-wrangler.com/acquiring-stock-market-data-from-alpha-vantage/).
 
+If you like this project, please star this repo and [support my work](https://www.codecapers.com.au/about#support-my-work)
+
 ## Getting an Alpha Vantage API key
 
 Alpha Vantage is free, but to use it you must sign up for an API key. Please follow this link to sign up:
